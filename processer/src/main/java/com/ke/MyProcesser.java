@@ -21,6 +21,7 @@ import javax.lang.model.SourceVersion;
 import javax.lang.model.element.Element;
 import javax.lang.model.element.TypeElement;
 import javax.lang.model.util.Elements;
+import javax.tools.Diagnostic;
 
 @AutoService(Processor.class)
 public class MyProcesser extends AbstractProcessor {
@@ -42,6 +43,10 @@ public class MyProcesser extends AbstractProcessor {
     public boolean process(Set<? extends TypeElement> set, RoundEnvironment roundEnvironment) {
 
         Set<? extends Element> sets = roundEnvironment.getElementsAnnotatedWith(Price.class);
+
+        if (sets.isEmpty()) {
+            return true;
+        }
 
 
         for (Element element : sets) {
@@ -67,11 +72,17 @@ public class MyProcesser extends AbstractProcessor {
                 annotatedClass.createJavaFile().writeTo(mFiler);
             } catch (IOException e) {
                 e.printStackTrace();
+                error("create java file error %s", e.getMessage());
             }
         }
 
 
         return true;
+    }
+
+    //给开发者提供错误信息
+    private void error(String msg, Object... args) {
+        mMessager.printMessage(Diagnostic.Kind.ERROR, String.format(msg, args));
     }
 
     //根据 field 生成 annotatedClass

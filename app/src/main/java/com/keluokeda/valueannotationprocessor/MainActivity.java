@@ -13,6 +13,11 @@ public class MainActivity extends AppCompatActivity {
     @Price(10)
     int value;
 
+    @Price(200)
+    int price =100;
+
+
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
